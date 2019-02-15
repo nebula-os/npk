@@ -1,3 +1,5 @@
+use clap::ArgMatches;
+
 pub struct AddCommand {}
 
 impl AddCommand {
@@ -13,6 +15,7 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for AddCommand {
             .author(crate::get_author())
             .alias("install")
             .arg(clap::Arg::with_name("package")
+                .required(true)
                 .help("Name of the package that should be installed. Optionally in the form of package@branch.")
                 .index(1)
             )
@@ -21,5 +24,10 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for AddCommand {
                 include_str!("add.txt")
             )
             .into()
+    }
+
+    fn handle_matches(matches: &ArgMatches) {
+        println!("Hey, got a build command here!");
+        println!("Installing \"{}\".", matches.value_of("package").unwrap());
     }
 }

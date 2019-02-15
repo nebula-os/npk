@@ -1,0 +1,1 @@
+By default, a new package will be created in the directory matching package name. This can be overridden by passing "--directory" or "-d" arguments.
