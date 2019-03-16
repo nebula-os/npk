@@ -1,2 +1,2 @@
 # Nebula Package Keeper
-## The package manager for Nebula OS
+The package manager for Nebula OS
