@@ -9,6 +9,7 @@ use clap::{App, Arg, SubCommand};
 
 use crate::commands::add::AddCommand;
 use crate::commands::new::NewCommand;
+use crate::commands::doctor::DoctorCommand;
 
 pub mod commands;
 pub mod directory;
@@ -26,6 +27,7 @@ fn main() {
         .about("The package manager for Nebula OS")
         .subcommand(AddCommand::clap_command())
         .subcommand(NewCommand::clap_command())
+        .subcommand(DoctorCommand::clap_command())
         .get_matches();
 
     // Process the arguments

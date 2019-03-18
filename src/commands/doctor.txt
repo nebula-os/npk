@@ -1,0 +1,1 @@
+This command is useful for finding potential problems in configuration or execution of Nebula Package Keeper.

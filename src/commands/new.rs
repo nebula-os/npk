@@ -3,8 +3,10 @@ use std::path::PathBuf;
 
 use clap::ArgMatches;
 
-use crate::package::manifest::Manifest;
+use crate::package::manifest::{Manifest, ManifestDependency};
 use crate::package::manifest::ManifestInfo;
+use std::collections::HashMap;
+use std::collections::btree_map::BTreeMap;
 
 pub struct NewCommand {}
 
@@ -31,7 +33,7 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for NewCommand {
                 .short("d")
                 .value_name("directory")
             )
-            .about("Create a new package.")
+            .about("Create a new package")
             .after_help(
                 include_str!("new.txt")
             )
@@ -48,7 +50,7 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for NewCommand {
         let directory: PathBuf = matches.value_of("directory")
             .map(|dir| current_dir.join(dir.parse::<PathBuf>()
                 .expect("Provided directory path is incorrect")))
-            .unwrap_or(current_dir);
+            .unwrap_or(current_dir.join(&name));
 
         if directory.exists() {
             panic!("Directory \"{}\" already exists", directory.file_name()
@@ -62,14 +64,23 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for NewCommand {
             .unwrap();
 
         // Create a manifest
+        let mut dependencies = BTreeMap::new();
+        dependencies.insert("short".to_owned(), ManifestDependency::Short("1.0.0".to_owned()));
+        dependencies.insert("long".to_owned(), ManifestDependency::Long { version: "1.1.0".to_owned() });
+        let dependencies = Option::Some(dependencies);
         let manifest = Manifest {
             info: ManifestInfo {
-                name: name,
+                name,
+                version: "0.0.0".to_owned(),
                 ..Default::default()
             },
+            dependencies,
             ..Default::default()
         };
         let manifest_path = directory.join("manifest.toml");
-        manifest.to_file(manifest_path);
+        manifest.to_file(manifest_path, true);
+
+        // Report
+        println!("Created a new package \"{}\" @ {:?}", manifest.info.name, directory);
     }
 }
