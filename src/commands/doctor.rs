@@ -1,4 +1,6 @@
+use crate::environment::Environment;
 use clap::ArgMatches;
+use num_cpus::{get, get_physical};
 
 pub struct DoctorCommand {}
 
@@ -16,13 +18,14 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for DoctorCommand {
             .alias("doc")
             .alias("diagnose")
             .about("Diagnose a system for potential problems")
-            .after_help(
-                include_str!("doctor.txt")
-            )
+            .after_help(include_str!("doctor.txt"))
             .into()
     }
 
     fn handle_matches(matches: &ArgMatches) {
-        println!("Diagnosing your system...");
+        // Get current environment
+        let env = Environment::current();
+
+        println!("Architecture: {:?}", env.arch);
     }
 }

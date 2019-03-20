@@ -3,16 +3,18 @@ extern crate semver;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate num_cpus;
 extern crate toml;
 
 use clap::{App, Arg, SubCommand};
 
 use crate::commands::add::AddCommand;
-use crate::commands::new::NewCommand;
 use crate::commands::doctor::DoctorCommand;
+use crate::commands::new::NewCommand;
 
 pub mod commands;
 pub mod directory;
+pub mod environment;
 pub mod package;
 
 const VERSION: &str = "0.0.1";
@@ -36,6 +38,9 @@ fn main() {
     }
     if let Some(matches) = matches.subcommand_matches(NewCommand::clap_command().get_name()) {
         NewCommand::handle_matches(matches);
+    }
+    if let Some(matches) = matches.subcommand_matches(DoctorCommand::clap_command().get_name()) {
+        DoctorCommand::handle_matches(matches);
     }
 }
 
