@@ -4,20 +4,23 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate num_cpus;
+extern crate sodiumoxide;
 extern crate toml;
+extern crate users;
 
 use clap::{App, Arg, SubCommand};
 
 use crate::commands::add::AddCommand;
 use crate::commands::doctor::DoctorCommand;
 use crate::commands::new::NewCommand;
+use crate::commands::pack::PackCommand;
 
 pub mod commands;
 pub mod directory;
 pub mod environment;
 pub mod package;
 
-const VERSION: &str = "0.0.1";
+const VERSION: &str = "0.0.0";
 
 fn main() {
     use commands::Command;
@@ -30,6 +33,7 @@ fn main() {
         .subcommand(AddCommand::clap_command())
         .subcommand(NewCommand::clap_command())
         .subcommand(DoctorCommand::clap_command())
+        .subcommand(PackCommand::clap_command())
         .get_matches();
 
     // Process the arguments
@@ -41,6 +45,9 @@ fn main() {
     }
     if let Some(matches) = matches.subcommand_matches(DoctorCommand::clap_command().get_name()) {
         DoctorCommand::handle_matches(matches);
+    }
+    if let Some(matches) = matches.subcommand_matches(PackCommand::clap_command().get_name()) {
+        PackCommand::handle_matches(matches);
     }
 }
 

@@ -27,5 +27,13 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for DoctorCommand {
         let env = Environment::current();
 
         println!("Architecture: {:?}", env.arch);
+        println!("Processors: {} ({} physical)", env.cpus, env.cpus_physical);
+        println!(
+            "User (Group): {} ({})",
+            env.user.name().to_str().unwrap(),
+            env.group.name().to_str().unwrap()
+        );
+        println!("Home: {:?}", env.home_directory);
+        println!("Packages: {:?}", env.packages_directory);
     }
 }

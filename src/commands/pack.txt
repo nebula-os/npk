@@ -1,0 +1,1 @@
+Default target location is the current folder. To change it pass --out as a parameter, which may contain either the resulting package file path or the directory to place a default package in.
