@@ -3,6 +3,8 @@ extern crate semver;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+extern crate bincode;
+extern crate lz4;
 extern crate num_cpus;
 extern crate sodiumoxide;
 extern crate toml;
