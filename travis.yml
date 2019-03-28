@@ -1,0 +1,12 @@
+language: rust
+cache: cargo
+os:
+  - linux
+before_install:
+  - sudo apt-get update
+  - cargo install just
+  - sudo apt-get install liblz4-dev
+rust:
+  - nightly
+script:
+  - just build-x86_64

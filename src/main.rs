@@ -4,6 +4,7 @@ extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate bincode;
+extern crate ion_shell;
 extern crate lz4;
 extern crate num_cpus;
 extern crate sodiumoxide;

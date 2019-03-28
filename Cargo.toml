@@ -16,3 +16,6 @@ num_cpus = "1.10.0"
 sodiumoxide = "0.2.1"
 users = "0.9.1"
 bincode = "1.1.2"
+
+[dependencies.ion-shell]
+git = "https://gitlab.redox-os.org/redox-os/ion.git"
