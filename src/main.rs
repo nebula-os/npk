@@ -6,6 +6,7 @@ extern crate serde_derive;
 extern crate bincode;
 extern crate ion_shell;
 extern crate lz4;
+extern crate nix;
 extern crate num_cpus;
 extern crate sodiumoxide;
 extern crate toml;
@@ -22,6 +23,7 @@ pub mod commands;
 pub mod directory;
 pub mod environment;
 pub mod package;
+pub mod shell;
 
 const VERSION: &str = "0.0.0";
 

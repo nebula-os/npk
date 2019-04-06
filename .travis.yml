@@ -4,7 +4,7 @@ os:
   - linux
 before_install:
   - sudo apt-get update
-  - cargo install just
+  - cargo install just --force
   - sudo apt-get install liblz4-dev
   - sudo apt-get install musl-dev
   - sudo apt-get install musl-tools
@@ -14,4 +14,4 @@ rust:
   - nightly
 script:
   - just build-x86_64
-  - just build-aarch64
+#  - just build-aarch64

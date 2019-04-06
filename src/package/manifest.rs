@@ -17,6 +17,8 @@ pub static MANIFEST_DEFAULT_FILE: &str = "manifest.toml";
 pub struct Manifest {
     pub info: ManifestInfo,
     pub dependencies: Option<BTreeMap<String, ManifestDependency>>,
+    pub host_dependencies: Option<BTreeMap<String, ManifestDependency>>,
+    pub sources: Option<BTreeMap<String, ManifestSource>>,
 }
 
 impl Manifest {
@@ -51,14 +53,26 @@ impl Manifest {
     }
 
     pub fn validate(&self) {
+        // Package name
         if self.info.name.len() < 1 {
             panic!("Name of the package should be at least 1 character long");
         }
+
+        // Package version
         self.info
             .version
             .parse::<Version>()
             .expect("Package version is invalid");
+
+        // Package dependencies
         if let Some(dependencies) = &self.dependencies {
+            dependencies.values().for_each(|value| {
+                value.validate();
+            });
+        };
+
+        // Package host dependencies
+        if let Some(dependencies) = &self.host_dependencies {
             dependencies.values().for_each(|value| {
                 value.validate();
             });
@@ -71,6 +85,7 @@ impl Manifest {
 pub struct ManifestInfo {
     pub name: String,
     pub version: String,
+    pub arch: Vec<String>,
 }
 
 // Dependency
@@ -98,4 +113,12 @@ impl Default for ManifestDependency {
     fn default() -> Self {
         ManifestDependency::Short(Default::default())
     }
+}
+
+// Source
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ManifestSource {
+    Url(String),
+    Detailed { url: String },
 }
