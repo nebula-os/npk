@@ -19,3 +19,6 @@ Cargo.lock
 
 # General
 /alpine/packages/**/src/*
+
+# Cache
+/cache/
