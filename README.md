@@ -2,9 +2,9 @@
 The package manager for Nebula OS 📦
 
 ### Goals
-* Optimizes for multi-core systems
+* Optimized for multi-core systems
 * Utilizes Linux sandboxing features
-* Compiles statically
+* Compiles into a static binary
 
 ### Features
 * Fast, granular and parallel task-based model based on [shred](https://crates.io/crates/shred)
