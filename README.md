@@ -2,8 +2,8 @@
 The package manager for Nebula OS 📦
 
 ### Goals
-* Optimize for multi-core systems
-* Utilize Linux sandboxing features
+* Optimizes for multi-core systems
+* Utilizes Linux sandboxing features
 * Compiles statically
 
 ### Features
