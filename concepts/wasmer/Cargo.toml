@@ -1,0 +1,23 @@
+[package]
+name = "wasmer"
+version = "0.1.0"
+authors = ["skyne98 <ahalahan@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.wasmer-runtime]
+git = "https://github.com/wasmerio/wasmer"
+features = ["llvm"]
+revision = "52afd40"
+[dependencies.wasmer-runtime-core]
+git = "https://github.com/wasmerio/wasmer"
+revision = "52afd40"
+[dependencies.wasmer-wasi]
+git = "https://github.com/wasmerio/wasmer"
+revision = "52afd40"
+[dependencies.wasmer-dev-utils]
+git = "https://github.com/wasmerio/wasmer"
+revision = "52afd40"
