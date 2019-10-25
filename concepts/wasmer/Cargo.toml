@@ -11,13 +11,13 @@ edition = "2018"
 [dependencies.wasmer-runtime]
 git = "https://github.com/wasmerio/wasmer"
 features = ["llvm"]
-revision = "52afd40"
+revision = "33f6c02"
 [dependencies.wasmer-runtime-core]
 git = "https://github.com/wasmerio/wasmer"
-revision = "52afd40"
+revision = "33f6c02"
 [dependencies.wasmer-wasi]
 git = "https://github.com/wasmerio/wasmer"
-revision = "52afd40"
+revision = "33f6c02"
 [dependencies.wasmer-dev-utils]
 git = "https://github.com/wasmerio/wasmer"
-revision = "52afd40"
+revision = "33f6c02"

@@ -27,7 +27,7 @@ fn main() {
     let module = store_module(module).expect("Can't load the stored WebAssembly module");
 
     let import_object =
-        wasmer_wasi::generate_import_object(vec![], vec![], vec![".".to_string()], vec![]);
+        wasmer_wasi::generate_import_object(vec![], vec![], vec![".".to_string().into()], vec![]);
     let instance = module
         .instantiate(&import_object)
         .map_err(|err| format!("Can't instantiate the WebAssembly module: {:?}", err))

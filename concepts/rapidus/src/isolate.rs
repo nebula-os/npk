@@ -45,14 +45,18 @@ impl Isolate {
     }
 
     pub fn execute_script(&mut self, src: &str) -> ScriptResult {
-        let mut parser = Parser::new("test", src.to_owned());
+        let mut parser = Parser::new("test", src.to_owned() + ";undefined;");
         let node = parser.parse_all()?;
-        let mut iseq = vec![];
 
-        let func_info = self.vm.compile(&node, &mut iseq, true, 0)?;
-        self.vm.run_global(func_info, iseq)?;
-        let val: Value = self.vm.current_context.stack.pop()?.into();
-        val.debug_string(true);
+        let func_info = self.vm.compile(&node, true)?;
+        self.vm.run_global(func_info)?;
+
+        let val: Value = self.vm
+            .current_context
+            .stack
+            .pop()
+            .unwrap_or(Value::undefined().into())
+            .into();
 
         Ok(val)
     }
