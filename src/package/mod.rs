@@ -1,4 +1,5 @@
 use crate::package::manifest::Manifest;
+use anyhow::{Result, Context};
 use bincode::{deserialize, serialize, Error};
 
 pub mod manifest;
@@ -11,11 +12,10 @@ pub struct Package {
 }
 
 impl Package {
-    pub fn into_bytes(&self) -> Result<Vec<u8>, Error> {
-        serialize(self)
+    pub fn into_bytes(&self) -> Result<Vec<u8>> {
+        serialize(self).with_context(|| "Cannot serialize the package")
     }
-
-    pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
-        deserialize(bytes)
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
+        deserialize(bytes).with_context(|| "Cannot serialize the package")
     }
 }

@@ -3,12 +3,15 @@ extern crate semver;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate anyhow;
 extern crate bincode;
-extern crate ion_shell;
 extern crate lz4;
 extern crate nix;
 extern crate num_cpus;
-extern crate sodiumoxide;
+extern crate quick_js;
+extern crate ring;
+extern crate target_lexicon;
 extern crate toml;
 extern crate users;
 
@@ -23,7 +26,6 @@ pub mod commands;
 pub mod directory;
 pub mod environment;
 pub mod package;
-pub mod shell;
 
 const VERSION: &str = "0.0.0";
 

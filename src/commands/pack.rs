@@ -54,7 +54,8 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for PackCommand {
             "Cannot find \"{}\" at {:?}",
             MANIFEST_DEFAULT_FILE, manifest_path
         ));
-        let name = &package_directory.manifest.info.name;
+        let manifest = package_directory.manifest.evaluate().unwrap();
+        let name = manifest.name.clone();
         let package_file = format!("{}.{}", name, PACKAGE_EXTENSION);
 
         // Get a package path
@@ -82,7 +83,7 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for PackCommand {
         // Display some data
         println!(
             "Calling pack on manifest {:#?} with out {:?}",
-            package_directory.manifest, path
+            manifest, path
         );
     }
 }

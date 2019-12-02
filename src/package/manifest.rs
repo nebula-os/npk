@@ -1,124 +1,71 @@
-use std::fs::File;
-use std::io::Read;
-use std::io::Write;
-use std::path::Path;
-use std::path::PathBuf;
-
-use semver::{Version, VersionReq};
-use std::collections::btree_map::BTreeMap;
+use anyhow::{Context, Result};
+use bincode::{deserialize, serialize};
+use quick_js::{Context as ScriptContext, JsValue};
 use std::collections::HashMap;
-use std::iter::Map;
-use toml::de::Error;
+use std::fs::File;
+use std::io::{Read, Write};
+use std::path::Path;
 
-pub static MANIFEST_DEFAULT_FILE: &str = "manifest.toml";
+pub static MANIFEST_DEFAULT_FILE: &str = "manifest.ts";
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-#[serde(rename_all = "kebab-case")]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Manifest {
-    pub info: ManifestInfo,
-    pub dependencies: Option<BTreeMap<String, ManifestDependency>>,
-    pub host_dependencies: Option<BTreeMap<String, ManifestDependency>>,
-    pub sources: Option<BTreeMap<String, ManifestSource>>,
+    pub source: String,
 }
 
 impl Manifest {
-    pub fn from<P>(path: P) -> Result<Self, toml::de::Error>
-    where
-        P: AsRef<Path>,
-    {
-        let mut file = File::open(path).unwrap();
-        let mut contents = String::new();
-        file.read_to_string(&mut contents).unwrap();
-        let manifest = toml::from_str(&contents);
+    pub fn into_bytes(&self) -> Result<Vec<u8>> {
+        serialize(self).with_context(|| "Cannot serialize the manifest")
+    }
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
+        deserialize(bytes).with_context(|| "Cannot deserialize the manifest")
+    }
+    pub fn from<P: AsRef<Path>>(path: P) -> Result<Self> {
+        let contents = std::fs::read_to_string(path)?;
 
-        // Do the validation
-        manifest.map(|manifest: Manifest| {
-            Manifest::validate(&manifest);
-            manifest
+        Ok(Manifest { source: contents })
+    }
+    pub fn to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
+        std::fs::write(path, self.source.clone().into_bytes())?;
+        Ok(())
+    }
+    pub fn evaluate(&self) -> Result<ManifestEvaluated> {
+        let context = ScriptContext::builder().memory_limit(100_000).build()?;
+
+        context.eval(&self.source)?;
+        let result = if let JsValue::Object(obj) = context
+            .eval("manifest()")
+            .with_context(|| "Error calling the \"manifest()\" function")?
+        {
+            Ok(obj)
+        } else {
+            Err(anyhow!(
+                "Calling the \"manifest()\" didn't return an object"
+            ))
+        }?;
+        let manifest_name = match result
+            .get("name")
+            .with_context(|| "Couldn't find \"name\" in the manifest")?
+        {
+            JsValue::String(name) => Ok(name.clone()),
+            _ => Err(anyhow!("Manifest field \"name\" is not a string")),
+        }?;
+        let manifest_version = match result
+            .get("version")
+            .with_context(|| "Couldn't find \"version\" in the manifest")?
+        {
+            JsValue::String(version) => Ok(version.clone()),
+            _ => Err(anyhow!("Manifest field \"version\" is not a string")),
+        }?;
+        Ok(ManifestEvaluated {
+            name: manifest_name,
+            version: manifest_version,
         })
     }
-
-    pub fn to_file<P>(&self, path: P, validate: bool)
-    where
-        P: AsRef<Path>,
-    {
-        // Validate the values
-        if validate {
-            self.validate();
-        }
-
-        let mut file = File::create(path).unwrap();
-        file.write_all(format!("{}", toml::Value::try_from(self).unwrap()).as_bytes())
-            .unwrap();
-    }
-
-    pub fn validate(&self) {
-        // Package name
-        if self.info.name.len() < 1 {
-            panic!("Name of the package should be at least 1 character long");
-        }
-
-        // Package version
-        self.info
-            .version
-            .parse::<Version>()
-            .expect("Package version is invalid");
-
-        // Package dependencies
-        if let Some(dependencies) = &self.dependencies {
-            dependencies.values().for_each(|value| {
-                value.validate();
-            });
-        };
-
-        // Package host dependencies
-        if let Some(dependencies) = &self.host_dependencies {
-            dependencies.values().for_each(|value| {
-                value.validate();
-            });
-        };
-    }
 }
 
-// Info
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ManifestInfo {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ManifestEvaluated {
     pub name: String,
     pub version: String,
-    pub arch: Vec<String>,
-}
-
-// Dependency
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ManifestDependency {
-    Short(String),
-    Long { version: String },
-}
-
-impl ManifestDependency {
-    pub fn validate(&self) {
-        match self {
-            ManifestDependency::Short(version) => version
-                .parse::<VersionReq>()
-                .expect(&format!("Cannot parse version requirement \"{}\"", version)),
-            ManifestDependency::Long { version } => version
-                .parse::<VersionReq>()
-                .expect(&format!("Cannot parse version requirement \"{}\"", version)),
-        };
-    }
-}
-
-impl Default for ManifestDependency {
-    fn default() -> Self {
-        ManifestDependency::Short(Default::default())
-    }
-}
-
-// Source
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ManifestSource {
-    Url(String),
-    Detailed { url: String },
 }
