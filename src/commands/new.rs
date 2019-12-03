@@ -3,7 +3,9 @@ use std::path::PathBuf;
 
 use clap::ArgMatches;
 
-use crate::package::manifest::{Manifest, MANIFEST_DEFAULT_FILE};
+use crate::package::manifest::{
+    manifest_definition_to_file, Manifest, MANIFEST_DEFAULT_DEFINITION_FILE, MANIFEST_DEFAULT_FILE,
+};
 use std::collections::btree_map::BTreeMap;
 use std::collections::HashMap;
 
@@ -66,13 +68,17 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for NewCommand {
         // Manifest
         let manifest = Manifest {
             source: format!(
-                "function manifest() {{ return {{ name: \"{}\", version: \"{}\" }}; }}",
+                "/// <reference path=\"typings.d.ts\"/>\nfunction manifest(): Manifest {{ return {{ name: \"{}\", version: \"{}\" }}; }}",
                 name.clone(),
                 "0.0.0"
             ),
         };
         let manifest_path = directory.join(MANIFEST_DEFAULT_FILE);
         manifest.to_file(manifest_path).unwrap();
+
+        // Manifest definition
+        let manifest_definition_path = directory.join(MANIFEST_DEFAULT_DEFINITION_FILE);
+        manifest_definition_to_file(manifest_definition_path).unwrap();
 
         // Report
         println!("Created a new package \"{}\" @ {:?}", name, directory);

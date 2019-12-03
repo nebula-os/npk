@@ -6,6 +6,7 @@ extern crate serde_derive;
 #[macro_use]
 extern crate anyhow;
 extern crate bincode;
+extern crate gaol;
 extern crate lz4;
 extern crate nix;
 extern crate num_cpus;

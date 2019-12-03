@@ -5,8 +5,22 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
+use std::sync::{Arc, RwLock};
 
 pub static MANIFEST_DEFAULT_FILE: &str = "manifest.ts";
+pub static MANIFEST_DEFAULT_DEFINITION_FILE: &str = "typings.d.ts";
+pub static MANIFEST_TYPESCRIPT_DEFINITION: &str = include_str!("./manifest.d.ts");
+
+pub fn manifest_definition_to_file<P: AsRef<Path>>(path: P) -> Result<()> {
+    std::fs::write(
+        path,
+        MANIFEST_TYPESCRIPT_DEFINITION
+            .to_owned()
+            .clone()
+            .into_bytes(),
+    )?;
+    Ok(())
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Manifest {
@@ -21,9 +35,9 @@ impl Manifest {
         deserialize(bytes).with_context(|| "Cannot deserialize the manifest")
     }
     pub fn from<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let contents = std::fs::read_to_string(path)?;
+        let source = std::fs::read_to_string(path)?;
 
-        Ok(Manifest { source: contents })
+        Ok(Manifest { source })
     }
     pub fn to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
         std::fs::write(path, self.source.clone().into_bytes())?;

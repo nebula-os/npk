@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use crate::package::manifest::{Manifest, MANIFEST_DEFAULT_FILE};
+use crate::package::Package;
 
 #[derive(Debug, Clone)]
 pub struct Directory {
@@ -46,6 +47,14 @@ impl Directory {
             Self::at_dir(&dir)
         } else {
             None
+        }
+    }
+}
+
+impl Into<Package> for Directory {
+    fn into(self) -> Package {
+        Package {
+            manifest: self.manifest.clone(),
         }
     }
 }

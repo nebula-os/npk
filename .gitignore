@@ -30,3 +30,10 @@ Cargo.lock
 
 # Packages
 /packages/
+
+/crates/typescript-compiler/js/dist/
+/crates/typescript-compiler/js/node_modules/
+/crates/typescript-compiler/js/yarn.lock
+/crates/typescript-compiler/js/.rts2_cache_cjs/
+/crates/typescript-compiler/js/.rts2_cache_es/
+/crates/typescript-compiler/js/.rts2_cache_umd/

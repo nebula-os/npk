@@ -1,0 +1,14 @@
+{
+  "name": "tsc-wrapper",
+  "version": "1.0.0",
+  "source": "src/main.ts",
+  "main": "dist/main.js",
+  "license": "MIT",
+  "scripts": {
+    "bundle": "microbundle build --raw -f umd"
+  },
+  "devDependencies": {
+    "microbundle": "^0.11.0",
+    "typescript": "^3.7.2"
+  }
+}

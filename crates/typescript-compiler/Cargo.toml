@@ -1,0 +1,17 @@
+[package]
+name = "typescript-compiler"
+version = "0.1.0"
+authors = ["skyne98 <ahalahan@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+quick-js = "0.3.0"
+anyhow = "1.0.25"
+serde_json = "1.0.42"
+serde = "1.0.103"
+serde_derive = "1.0.103"
+
+[examples]
+transpile = "examples/transpile.rs"
