@@ -2,9 +2,9 @@ extern crate anyhow;
 extern crate npk_typescript;
 
 use anyhow::Result;
+use npk_typescript::{Compiler, CompilerOptions, TranspileOptions};
 use std::io::{BufRead, Write};
 use std::time::Duration;
-use typescript_compiler::{Compiler, CompilerOptions, TranspileOptions};
 
 fn main() -> Result<()> {
     println!("Enter \"exit\" to terminate this example");
