@@ -1,5 +1,5 @@
-# Nebula Package Keeper 📦
-The package manager for Nebula OS and beyond
+# Nebula Package Keeper 
+The package manager for Nebula OS 📦
 
 ### Goals
 * Optimized for multi-core systems
