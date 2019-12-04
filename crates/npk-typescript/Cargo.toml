@@ -1,5 +1,5 @@
 [package]
-name = "typescript-compiler"
+name = "npk-typescript"
 version = "0.1.0"
 authors = ["skyne98 <ahalahan@gmail.com>"]
 edition = "2018"

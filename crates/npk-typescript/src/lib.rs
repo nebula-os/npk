@@ -34,10 +34,27 @@ impl Compiler {
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct TranspileOptions {
-    pub compilerOptions: Option<CompilerOptions>,
+    #[serde(rename = "compilerOptions")]
+    pub compiler_options: Option<CompilerOptions>,
 }
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct CompilerOptions {
     pub target: Option<String>,
+    #[serde(rename = "emitDeclarationOnly")]
+    pub emit_declarations_only: Option<bool>,
+    pub declaration: Option<bool>,
+    #[serde(rename = "declarationDir")]
+    pub declaration_dir: Option<String>,
+    #[serde(rename = "declarationMap")]
+    pub declaration_map: Option<bool>,
+    pub lib: Option<Vec<String>>,
+    pub module: Option<String>,
+    #[serde(rename = "moduleResolution")]
+    pub module_resolution: Option<String>,
+    #[serde(rename = "noLib")]
+    pub no_lib: Option<bool>,
+    pub jsx: Option<String>,
+    #[serde(rename = "jsxFactory")]
+    pub jsx_factory: Option<String>,
 }
