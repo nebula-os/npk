@@ -5,6 +5,8 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 
+pub mod ast;
+
 use anyhow::Result;
 use quick_js::Context;
 use serde_derive::{Deserialize, Serialize};
@@ -23,11 +25,18 @@ impl Compiler {
         Ok(Compiler { context })
     }
 
-    pub fn transpile(&mut self, source: String, options: TranspileOptions) -> Result<String> {
+    pub fn transpile(&mut self, source: &str, options: TranspileOptions) -> Result<String> {
         Ok(self.context.eval_as(&format!(
             "tscWrapper.transpile(\"{}\", {}).outputText",
             source,
             serde_json::to_string(&options)?
+        ))?)
+    }
+
+    pub fn parse(&mut self, source: &str) -> Result<String> {
+        Ok(self.context.eval_as(&format!(
+            "tscWrapper.parse(\"{}\", {}).outputText",
+            source
         ))?)
     }
 }

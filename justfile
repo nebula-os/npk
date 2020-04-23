@@ -17,3 +17,8 @@ docker-build-run:
         -v $(pwd)/cache/:/cache -i npk-build
     sudo chown -R $USER ./cache
     sudo chown -R $USER ./target
+
+build-docker-amd64:
+    sudo docker run --rm -it -v "$(pwd)":/home/rust/src messense/rust-musl-cross:x86_64-musl cargo build --release
+build-docker-armv7:
+    sudo docker run --rm -it -v "$(pwd)":/home/rust/src messense/rust-musl-cross:arm-musleabihf cargo build --release

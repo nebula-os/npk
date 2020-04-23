@@ -6,6 +6,7 @@ use clap::ArgMatches;
 use crate::package::manifest::{
     manifest_definition_to_file, Manifest, MANIFEST_DEFAULT_DEFINITION_FILE, MANIFEST_DEFAULT_FILE,
 };
+use npk_typescript::{CompilerOptions, TranspileOptions};
 use std::collections::btree_map::BTreeMap;
 use std::collections::HashMap;
 
@@ -66,13 +67,25 @@ impl<'a, 'b> crate::commands::Command<'a, 'b> for NewCommand {
         DirBuilder::new().create(&directory).unwrap();
 
         // Manifest
-        let manifest = Manifest {
-            source: format!(
-                "/// <reference path=\"typings.d.ts\"/>\nfunction manifest(): Manifest {{ return {{ name: \"{}\", version: \"{}\" }}; }}",
-                name.clone(),
-                "0.0.0"
-            ),
-        };
+        let source = format!(
+            "/// <reference path=\"typings.d.ts\"/>\nfunction manifest(): Manifest {{ return {{ name: \"{}\", version: \"{}\" }}; }}",
+            name.clone(),
+            "0.0.0"
+        );
+        // Transpile
+        let mut compiler = npk_typescript::Compiler::new().unwrap();
+        let source_js = compiler
+            .transpile(
+                &source,
+                TranspileOptions {
+                    compiler_options: Some(CompilerOptions {
+                        target: Some("es3".to_owned()),
+                        ..Default::default()
+                    }),
+                },
+            )
+            .unwrap();
+        let manifest = Manifest { source, source_js };
         let manifest_path = directory.join(MANIFEST_DEFAULT_FILE);
         manifest.to_file(manifest_path).unwrap();
 

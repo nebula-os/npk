@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use bincode::{deserialize, serialize};
+use npk_typescript::{CompilerOptions, TranspileOptions};
 use quick_js::{Context as ScriptContext, JsValue};
 use std::collections::HashMap;
 use std::fs::File;
@@ -25,6 +26,7 @@ pub fn manifest_definition_to_file<P: AsRef<Path>>(path: P) -> Result<()> {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Manifest {
     pub source: String,
+    pub source_js: String,
 }
 
 impl Manifest {
@@ -37,7 +39,19 @@ impl Manifest {
     pub fn from<P: AsRef<Path>>(path: P) -> Result<Self> {
         let source = std::fs::read_to_string(path)?;
 
-        Ok(Manifest { source })
+        // Transpile
+        let mut compiler = npk_typescript::Compiler::new()?;
+        let source_js = compiler.transpile(
+            &source,
+            TranspileOptions {
+                compiler_options: Some(CompilerOptions {
+                    target: Some("es3".to_owned()),
+                    ..Default::default()
+                }),
+            },
+        )?;
+
+        Ok(Manifest { source, source_js })
     }
     pub fn to_file<P: AsRef<Path>>(&self, path: P) -> Result<()> {
         std::fs::write(path, self.source.clone().into_bytes())?;

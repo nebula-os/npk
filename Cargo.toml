@@ -22,10 +22,10 @@ anyhow = "1.0.25"
 quick-js = "0.3.0"
 target-lexicon = "0.10.0"
 gaol = "0.2.1"
+npk-typescript = { path = "crates/npk-typescript" }
 
 [workspace]
 members = [
-    "concepts/boa",
-    "concepts/wasmtime",
+    "concepts/wasmer",
     "crates/npk-typescript"
 ]

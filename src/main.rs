@@ -9,12 +9,12 @@ extern crate bincode;
 extern crate gaol;
 extern crate lz4;
 extern crate nix;
+extern crate npk_typescript;
 extern crate num_cpus;
 extern crate quick_js;
 extern crate ring;
 extern crate target_lexicon;
 extern crate toml;
-extern crate users;
 
 use clap::{App, Arg, SubCommand};
 
